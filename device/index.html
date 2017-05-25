@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+<head>
+<title>IoT DevTool - Device</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAhFBMVEUAAAA9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suKBjjSLAAAAK3RSTlMARKH3LhRLBOLZxK6spox/efHLv6trYCgeGplTTj06NA/TuYZzVwzq3rSTcVKDIwAAAS1JREFUOMvNk+tygjAQhRdC5GK5C6gocld73v/92pBAptHpz07Pn2wy3yS7Zzf0V7oOF/MoLo56Ux3S2AQ6P3bXmHvwaxP4ZIjWuECg4OOsiYYxrsIzShUw76aJHI2KbOyW9Qag18ABlgE4AEINfLwAlDy85FeA3Dmo3gChAJRq++i4Zg4+HNrUM2TSwwjyvdMgbLBGWTRPAdiyKHa3xGGGjIsCvL1QAAC5eo4tRRUPllAD+M6iDEBBQm2A57T4y9iJClvlUfp9JrMccSCpp0xXZpSfKBpVcfXmw2X14ZyG4m7+zijVjbQlmsK4NAA9Gbn7vTAgMQGVgjWLCRSl/uimMZFtB5S034AI5kTy8io6UK0zjXTiZKg6o3NpuwKDCXi4N3q3i17/RVLRf9EXqUUaNq3tnBUAAAAASUVORK5CYII=">
+<link rel="stylesheet" href="../share/style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript">
+  var appInsights=window.appInsights||function(config){
+    function i(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s="AuthenticatedUserContext",h="start",c="stop",l="Track",a=l+"Event",v=l+"Page",y=u.createElement(o),r,f;y.src=config.url||"https://az416426.vo.msecnd.net/scripts/a/ai.0.js";u.getElementsByTagName(o)[0].parentNode.appendChild(y);try{t.cookie=u.cookie}catch(p){}for(t.queue=[],t.version="1.0",r=["Event","Exception","Metric","PageView","Trace","Dependency"];r.length;)i("track"+r.pop());return i("set"+s),i("clear"+s),i(h+a),i(c+a),i(h+v),i(c+v),i("flush"),config.disableExceptionTracking||(r="onerror",i("_"+r),f=e[r],e[r]=function(config,i,u,e,o){var s=f&&f(config,i,u,e,o);return s!==!0&&t["_"+r](config,i,u,e,o),s}),t
+    }({
+        instrumentationKey:"2c59ab68-9ebb-4c7c-9fe1-c2945c4272c4"
+    });
+       
+    window.appInsights=appInsights;
+    appInsights.trackPageView();
+</script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="../share/hmac-sha256.js"></script>
+<script src="../share/enc-base64.js"></script>
+<script src="../share/mqttws31.js"></script>
+<script src="../share/encoder.js"></script>
+<script src="../share/require.js"></script>
+<script>
+var WEBSITE_HOSTNAME = '%WEBSITE_HOSTNAME%';
+</script>
+<script src="main.js"></script>
+</head>
+<body class="blue" spellcheck="false">
+<div id="iothub" v-cloak>
+<header><a href="../">IoT DevTool</a><span class="subtitle">Device</span></header>
+<nav>
+<ul>
+    <li v-on:click="goto('connectionString')" v-bind:class="{active: 'connectionString' === router}"><span><i class="material-icons">settings_ethernet</i>Connection String</span></li>
+    <li v-on:click="goto('d2cMessages')" v-bind:class="{active: 'd2cMessages' === router}"><span><i class="material-icons">usb</i>D2C Messages</span></li>
+    <li v-on:click="goto('c2dMessages')" v-bind:class="{active: 'c2dMessages' === router}"><span><i class="material-icons">cloud_queue</i>C2D Messages</span><div v-show="unreadC2D != 0" class="numberCircle">{{unreadC2D>999?'999+':unreadC2D}}</div></li>
+    <li v-on:click="goto('directMethods')" v-bind:class="{active: 'directMethods' === router}"><span><i class="material-icons">compare_arrows</i>Direct Methods</span><div v-show="unreadMethod != 0" class="numberCircle">{{unreadMethod>999?'999+':unreadMethod}}</div></li>
+    <li v-on:click="goto('deviceTwin')" v-bind:class="{active: 'deviceTwin' === router}"><span><i class="material-icons">tune</i>Device Twin</span><div v-show="unreadTwin != 0" class="numberCircle">{{unreadTwin>999?'999+':unreadTwin}}</div></li>
+</ul>
+</nav>
+<main>
+<div class="view" v-show="'connectionString' === router">
+    <h1>Connection String</h1>
+    <section>
+        <h2>IoT Hub Device Connection String</h2>
+        <div class="control-form">
+            <input type="text" placeholder="Device Connection String" v-model="connectionString">
+            <p>
+                <button v-on:click="connect">{{ connStatus === 'disconnected' ? 'Connect' : (connStatus === 'connecting' ? 'Cancel' : 'Disconnect') }}</button>
+                <span v-if="connErr !== '' || connStatus === 'connecting'">{{ connErr ? connErr : 'Connecting...' }}</span>
+            </p>
+        </div>
+        <div class="control-form">
+            <p>Show MQTT over WebSockets connection options</p>
+            <input type="checkbox" id="mqtt_conn_opts" v-model="showMQTTConnOpts">
+            <label for="mqtt_conn_opts"></label>
+        </div>
+    </section>
+    <section v-show="showMQTTConnOpts">
+        <h2>MQTT Connection Options</h2>
+        <div>
+            <table>
+                <tr>
+                    <td>Host</td><td>{{ mqttConnOpts.host }}</td>
+                </tr>
+                <tr>
+                    <td>Port</td><td>{{ mqttConnOpts.port }}</td>
+                </tr>
+                <tr>
+                    <td>Client ID</td><td>{{ mqttConnOpts.clientId }}</td>
+                </tr>
+                <tr>
+                    <td>Username</td><td>{{ mqttConnOpts.username }}</td>
+                </tr>
+                <tr>
+                    <td>Password</td><td>{{ mqttConnOpts.password }}</td>
+                </tr>
+                <tr>
+                    <td>Keep Alive</td><td>{{ mqttConnOpts.keepAlive }}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
+<div class="view" v-show="'d2cMessages' === router">
+    <h1>D2C Messages</h1>
+    <section>
+        <h2>Send Device to Cloud Messages</h2>
+        <div class="control-form">
+            <p>Send messages to cloud. JSON, XML, plaintext, anything is OK.</p>
+            <textarea rows="10" v-model="d2cMessagePayload"></textarea>
+            <p><button v-on:click="sendD2CMessage">Send</button></p>
+        </div>
+        <div class="control-form">
+            <p>Show MQTT over WebSockets options</p>
+            <input type="checkbox" id="mqtt_d2c_opts" v-model="showMQTTD2CMsgOpts">
+            <label for="mqtt_d2c_opts"></label>
+        </div>
+    </section>
+    <section v-show="showMQTTD2CMsgOpts">
+        <h2>D2C Messages MQTT Options</h2>
+        <div>
+            <table>
+                <tr>
+                    <td>Topic</td><td>{{ mqttD2COpts.topic }}</td>
+                </tr>
+                <tr>
+                    <td>QoS</td><td>{{ mqttD2COpts.qos }}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h2>Sent Messages</h2>
+        <table class="messageHistory">
+            <tr v-for="message in d2cMessages">
+                <td>{{ message.timestamp }}</td>
+                <td>{{ message.payload }}</td>
+            </tr>
+        </table>
+    </section>
+</div>
+<div class="view" v-show="'c2dMessages' === router">
+    <h1>C2D Messages</h1>
+    <section>
+        <h2>Listen Cloud to Device Messages</h2>
+        <div class="control-form">
+            <p>Show MQTT over WebSockets subscription options</p>
+            <input type="checkbox" id="mqtt_c2d_opts" v-model="showMQTTC2DMsgOpts">
+            <label for="mqtt_c2d_opts"></label>
+        </div>
+    </section>
+    <section v-show="showMQTTC2DMsgOpts">
+        <h2>C2D Messages MQTT Subscription Options</h2>
+        <div>
+            <table>
+                <tr>
+                    <td>Topic</td><td>{{ mqttC2DOpts.topic }}</td>
+                </tr>
+                <tr>
+                    <td>QoS</td><td>{{ mqttC2DOpts.qos }}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h2>Received Messages</h2>
+        <table class="messageHistory">
+            <tr v-for="message in c2dMessages">
+                <td>{{ message.timestamp }}</td>
+                <td>{{ message.payload }}</td>
+            </tr>
+        </table>
+    </section>
+</div>
+<div class="view" v-show="'directMethods' === router">
+    <h1>Direct Methods</h1>
+    <section>
+        <h2>Listen Direct Methods</h2>
+        <div class="control-form" v-show="!showAddNewMethod">
+            <button class="add" v-on:click="addNewMethod">Add a method listener</button>
+        </div>
+        <div class="control-form" v-show="showAddNewMethod">
+            <p>Method name</p>
+            <input type="text" v-model="newMethodObj.name">
+            <p>Response payload, must be JSON string</p>
+            <textarea rows="10" v-model="newMethodObj.payload"></textarea>
+            <p>Status code</p>
+            <select v-model="newMethodObj.code">
+                <option value="200">200</option>
+                <option value="201">201</option>
+                <option value="204">204</option>
+                <option value="206">206</option>
+                <option value="400">400</option>
+                <option value="401">401</option>
+                <option value="403">403</option>
+                <option value="404">404</option>
+                <option value="500">500</option>
+                <option value="501">501</option>
+                <option value="503">503</option>
+                <option value="504">504</option>
+            </select>
+            <p>Response delay in milliseconds</p>
+            <select v-model="newMethodObj.delay">
+                <option value="0">0</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+                <option value="5000">5000</option>
+                <option value="10000">10000</option>
+            </select>
+            <p>
+                <button v-on:click="saveNewMethod">Add</button>
+                <button v-on:click="cancelNewMethod">Cancel</button>
+            </p>
+        </div>
+        <div class="control-form">
+            <p>Show MQTT over WebSockets subscription options</p>
+            <input type="checkbox" id="mqtt_method_opts" v-model="showMQTTMethodOpts">
+            <label for="mqtt_method_opts"></label>
+        </div>
+    </section>
+    <section v-show="showMQTTMethodOpts">
+        <h2>Direct Methods MQTT Subscription Options</h2>
+        <div>
+            <table>
+                <tr>
+                    <td>Topic</td><td>$iothub/methods/POST</td>
+                </tr>
+                <tr>
+                    <td>QoS</td><td>0</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h2>Method List</h2>
+        <table class="methodList">
+            <thead>
+                <tr>
+                    <th>Method Name</th>
+                    <th>Response Payload</th>
+                    <th>Status Code</th>
+                    <th>Response Delay</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="method in directMethods">
+                    <td>{{ method.name }}</td>
+                    <td>{{ method.payload }}</td>
+                    <td>{{ method.code }}</td>
+                    <td>{{ method.delay }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>Called Methods</h2>
+        <table class="messageHistory">
+            <tr v-for="method in calledMethods">
+                <td>{{ method.timestamp }}</td>
+                <td>{{ method.name }}</td>
+                <td>{{ method.payload }}</td>
+            </tr>
+        </table>
+    </section>
+</div>
+<div class="view" v-show="'deviceTwin' === router">
+    <h1>Device Twin</h1>
+    <section>
+        <h2>Desired Properties from Cloud</h2>
+        <div>
+            <table class="methodList">
+                <thead>
+                <tr>
+                    <th>Property Name</th>
+                    <th>Property Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(value,key) in desiredTwin">
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h2>Reported Properties Received by Cloud</h2>
+        <div>
+            <table class="methodList">
+                <thead>
+                <tr>
+                    <th>Property Name</th>
+                    <th>Property Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(value,key) in reportedTwin">
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <section>
+        <h2>Send Reported Properties to Cloud</h2>
+        <div>
+            <div class="control-form">
+            <p>Device twin must be JSON document.</p>
+            <textarea rows="10" v-model="newTwin"></textarea>
+            <p><button v-on:click="sendTwin">Send</button></p>
+            </div>
+        </div>
+    </section>
+</div>
+</main>
+<footer>By <a target="_blank" href="https://blogs.msdn.microsoft.com/zheli/">Zhe Li</a> &amp; <a target="_blank" href="https://blogs.msdn.microsoft.com/zhiqing/">Zhiqing Qiu</a></footer>
+</div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-92746982-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

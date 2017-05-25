@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+<title>IoT DevTool - RESTful</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAhFBMVEUAAAA9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suKBjjSLAAAAK3RSTlMARKH3LhRLBOLZxK6spox/efHLv6trYCgeGplTTj06NA/TuYZzVwzq3rSTcVKDIwAAAS1JREFUOMvNk+tygjAQhRdC5GK5C6gocld73v/92pBAptHpz07Pn2wy3yS7Zzf0V7oOF/MoLo56Ux3S2AQ6P3bXmHvwaxP4ZIjWuECg4OOsiYYxrsIzShUw76aJHI2KbOyW9Qag18ABlgE4AEINfLwAlDy85FeA3Dmo3gChAJRq++i4Zg4+HNrUM2TSwwjyvdMgbLBGWTRPAdiyKHa3xGGGjIsCvL1QAAC5eo4tRRUPllAD+M6iDEBBQm2A57T4y9iJClvlUfp9JrMccSCpp0xXZpSfKBpVcfXmw2X14ZyG4m7+zijVjbQlmsK4NAA9Gbn7vTAgMQGVgjWLCRSl/uimMZFtB5S034AI5kTy8io6UK0zjXTiZKg6o3NpuwKDCXi4N3q3i17/RVLRf9EXqUUaNq3tnBUAAAAASUVORK5CYII=">
+<link rel="stylesheet" href="../share/style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript">
+  var appInsights=window.appInsights||function(config){
+    function i(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s="AuthenticatedUserContext",h="start",c="stop",l="Track",a=l+"Event",v=l+"Page",y=u.createElement(o),r,f;y.src=config.url||"https://az416426.vo.msecnd.net/scripts/a/ai.0.js";u.getElementsByTagName(o)[0].parentNode.appendChild(y);try{t.cookie=u.cookie}catch(p){}for(t.queue=[],t.version="1.0",r=["Event","Exception","Metric","PageView","Trace","Dependency"];r.length;)i("track"+r.pop());return i("set"+s),i("clear"+s),i(h+a),i(c+a),i(h+v),i(c+v),i("flush"),config.disableExceptionTracking||(r="onerror",i("_"+r),f=e[r],e[r]=function(config,i,u,e,o){var s=f&&f(config,i,u,e,o);return s!==!0&&t["_"+r](config,i,u,e,o),s}),t
+    }({
+        instrumentationKey:"2c59ab68-9ebb-4c7c-9fe1-c2945c4272c4"
+    });
+       
+    window.appInsights=appInsights;
+    appInsights.trackPageView();
+</script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="../share/hmac-sha256.js"></script>
+<script src="../share/enc-base64.js"></script>
+<script src="../share/encoder.js"></script>
+<script>
+var WEBSITE_HOSTNAME = '%WEBSITE_HOSTNAME%';
+</script>
+<script src="main.js"></script>
+</head>
+<body class="red" spellcheck="false">
+<div id="iothub" v-cloak>
+<header><a href="../">IoT DevTool</a><span class="subtitle">RESTful</span></header>
+<nav>
+<ul>
+    <li v-on:click="goto('deviceAPI')" v-bind:class="{active: 'deviceAPI' === router}"><span><i class="material-icons">usb</i>Device API</span></li>
+    <li v-on:click="goto('deviceTwinAPI')" v-bind:class="{active: 'deviceTwinAPI' === router }"><span><i class="material-icons">tune</i>Device Twin API</span></li>
+    <li v-on:click="goto('httpRuntime')" v-bind:class="{active: 'httpRuntime' === router }"><span><i class="material-icons">http</i>HTTP Runtime</span></li>
+</ul>
+</nav>
+<main>
+<div class="view" v-show="'deviceAPI' === router">
+    <h1>Device API</h1>
+    <section>
+        <h2>IoT Hub Connection String</h2>
+        <div class="control-form">
+            <input type="text" placeholder="Connection String" v-model="deviceAPIConnectionString" :disabled="deviceAPIAccount !== ''">
+            <p>
+                <button v-on:click="applyDeviceAPIConnectionString">{{ deviceAPIAccount ? 'Change' : 'Apply' }}</button>
+            </p>
+        </div>
+    </section>
+    <section v-if="deviceAPIAccount">
+        <h2>API List</h2>
+        <div class="control-form">
+            <select class="apiList" v-model="deviceAPIName" v-on:change="updateDeviceAPObj">
+                <option value="bulkDeviceOperation">Bulk Device Operation</option>
+                <option value="deleteDevice">Delete Device</option>
+                <option value="getDevice">Get Device</option>
+                <option value="getDevices">Get Devices</option>
+                <option value="getRegistryStatistics">Get Registry Statistics</option>
+                <option value="getServiceStatistics">Get Service Statistics</option>
+                <option value="purgeCommandQueue">Purge Command Queue</option>
+                <option value="putDevice">Put Device</option>
+                <option value="queryDevices">Query Devices</option>
+            </select>
+            <h3>Host Name</h3>
+            <p>{{ currentDeviceAPIObj.host }}</p>
+            <h3>Method</h3>
+            <p>{{ currentDeviceAPIObj.method }}</p>
+            <h3>Path</h3>
+            <input type="text" v-model="currentDeviceAPIObj.path">
+            <h3>Header</h3>
+            <textarea rows="10" v-model="currentDeviceAPIObj.header"></textarea>
+            <div v-if="currentDeviceAPIObj.body">
+                <h3>Request Body</h3>
+                <textarea rows="10" v-model="currentDeviceAPIObj.body"></textarea>
+            </div>
+            <p>
+                <button v-on:click="sendDeviceAPIRequest">Send Request</button>
+            </p>
+        </div>
+    </section>
+    <section v-if="deviceAPIResponse.status">
+        <h2>API Response</h2>
+        <div class="control-form">
+            <h3>Status Code</h3>
+            <p>{{ deviceAPIResponse.status }}</p>
+            <div v-if="deviceAPIResponse.body">
+                <h3>Body</h3>
+                <textarea rows="10" v-model="deviceAPIResponse.body" disabled="disabled"></textarea>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="view" v-show="'deviceTwinAPI' === router">
+    <h1>Device Twin API</h1>
+    <section>
+        <h2>IoT Hub Connection String</h2>
+        <div class="control-form">
+            <input type="text" placeholder="Connection String" v-model="deviceTwinAPIConnectionString" :disabled="deviceTwinAPIAccount !== ''">
+            <p>
+                <button v-on:click="applyDeviceTwinAPIConnectionString">{{ deviceTwinAPIAccount ? 'Change' : 'Apply' }}</button>
+            </p>
+        </div>
+    </section>
+    <section v-if="deviceTwinAPIAccount">
+        <h2>API List</h2>
+        <div class="control-form">
+            <select class="apiList" v-model="deviceTwinAPIName" v-on:change="updateDeviceTwinAPIObj">
+                <option value="getDeviceTwin">Get Device Twin</option>
+                <option value="invokeDeviceMethod">Invoke Device Method</option>
+                <option value="updateDeviceTwin">Update Device Twin</option>
+            </select>
+            <h3>Host Name</h3>
+            <p>{{ currentDeviceTwinAPIObj.host }}</p>
+            <h3>Method</h3>
+            <p>{{ currentDeviceTwinAPIObj.method }}</p>
+            <h3>Path</h3>
+            <input type="text" v-model="currentDeviceTwinAPIObj.path">
+            <h3>Header</h3>
+            <textarea rows="10" v-model="currentDeviceTwinAPIObj.header"></textarea>
+            <div v-if="currentDeviceTwinAPIObj.body">
+                <h3>Request Body</h3>
+                <textarea rows="10" v-model="currentDeviceTwinAPIObj.body"></textarea>
+            </div>
+            <p>
+                <button v-on:click="sendDeviceTwinAPIRequest">Send Request</button>
+            </p>
+        </div>
+    </section>
+    <section v-if="deviceTwinAPIResponse.status">
+        <h2>API Response</h2>
+        <div class="control-form">
+            <h3>Status Code</h3>
+            <p>{{ deviceTwinAPIResponse.status }}</p>
+            <div v-if="deviceTwinAPIResponse.body">
+                <h3>Body</h3>
+                <textarea rows="10" v-model="deviceTwinAPIResponse.body" disabled="disabled"></textarea>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="view" v-if="'httpRuntime' === router">
+    <h1>HTTP Runtime</h1>
+    <section>
+        <h2>IoT Hub Connection String</h2>
+        <div class="control-form">
+            <input type="text" placeholder="Connection String" v-model="httpRuntimeConnectionString" :disabled="httpRuntimeAccount !== ''">
+            <p>
+                <button v-on:click="applyHttpRuntimeConnectionString">{{ httpRuntimeAccount ? 'Change' : 'Apply' }}</button>
+            </p>
+        </div>
+    </section>
+    <section v-if="httpRuntimeAccount">
+        <h2>API List</h2>
+        <div class="control-form">
+            <select class="apiList" v-model="httpRuntimeName" v-on:change="updateHttpRuntimeObj">
+                <option value="abandonDeviceBoundNotification">Abandon Device Bound Notification</option>
+                <option value="completeDeviceBoundNotification">Complete Device Bound Notification</option>
+                <option value="createFileUploadSasUri">Create File Upload Sas Uri</option>
+                <option value="receiveDeviceBoundNotification">Receive Device Bound Notification</option>
+                <option value="sendDeviceEvent">Send Device Event</option>
+                <option value="updateFileUploadStatus">Update File Upload Status</option>
+            </select>
+            <h3>Host Name</h3>
+            <p>{{ currentHttpRuntimeObj.host }}</p>
+            <h3>Method</h3>
+            <p>{{ currentHttpRuntimeObj.method }}</p>
+            <h3>Path</h3>
+            <input type="text" v-model="currentHttpRuntimeObj.path">
+            <h3>Header</h3>
+            <textarea rows="10" v-model="currentHttpRuntimeObj.header"></textarea>
+            <div v-if="currentHttpRuntimeObj.body">
+                <h3>Request Body</h3>
+                <textarea rows="10" v-model="currentHttpRuntimeObj.body"></textarea>
+            </div>
+            <p>
+                <button v-on:click="sendHttpRuntimeRequest">Send Request</button>
+            </p>
+        </div>
+    </section>
+    <section v-if="httpRuntimeResponse.status">
+        <h2>API Response</h2>
+        <div class="control-form">
+            <h3>Status Code</h3>
+            <p>{{ httpRuntimeResponse.status }}</p>
+            <div v-if="httpRuntimeResponse.body">
+                <h3>Body</h3>
+                <textarea rows="10" v-model="httpRuntimeResponse.body" disabled="disabled"></textarea>
+            </div>
+        </div>
+    </section>
+</div>
+</main>
+<footer>By <a target="_blank" href="https://blogs.msdn.microsoft.com/zheli/">Zhe Li</a> &amp; <a target="_blank" href="https://blogs.msdn.microsoft.com/zhiqing/">Zhiqing Qiu</a></footer>
+</div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-92746982-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

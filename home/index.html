@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+<title>IoT DevTool</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAhFBMVEUAAAA9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suI9suKBjjSLAAAAK3RSTlMARKH3LhRLBOLZxK6spox/efHLv6trYCgeGplTTj06NA/TuYZzVwzq3rSTcVKDIwAAAS1JREFUOMvNk+tygjAQhRdC5GK5C6gocld73v/92pBAptHpz07Pn2wy3yS7Zzf0V7oOF/MoLo56Ux3S2AQ6P3bXmHvwaxP4ZIjWuECg4OOsiYYxrsIzShUw76aJHI2KbOyW9Qag18ABlgE4AEINfLwAlDy85FeA3Dmo3gChAJRq++i4Zg4+HNrUM2TSwwjyvdMgbLBGWTRPAdiyKHa3xGGGjIsCvL1QAAC5eo4tRRUPllAD+M6iDEBBQm2A57T4y9iJClvlUfp9JrMccSCpp0xXZpSfKBpVcfXmw2X14ZyG4m7+zijVjbQlmsK4NAA9Gbn7vTAgMQGVgjWLCRSl/uimMZFtB5S034AI5kTy8io6UK0zjXTiZKg6o3NpuwKDCXi4N3q3i17/RVLRf9EXqUUaNq3tnBUAAAAASUVORK5CYII=">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI';
+    margin: 2em 0;
+}
+
+h1 {
+    font-weight: normal;
+    margin: 2em 0;
+    text-align: center;
+}
+
+span.beta {
+    color: #ccc;
+    font-size: 0.4em;
+    vertical-align: super;
+    left: 0.5em;
+    top: -0.5em;
+    position: relative;
+}
+
+a.item {
+    display: inline-block;
+    padding: 36px 20px 0 20px;
+    text-align: center;
+    height: 240px;
+    width: 320px;
+    text-decoration: none;
+    color: black;
+    border: 3px solid transparent;
+    vertical-align: top;
+    font-size: 16px;
+}
+
+a.item:hover {
+    border-color: #eee;
+}
+
+a.item p {
+    margin: 0.5em 0;
+}
+
+.description {
+    font-size: 0.875em;
+    color: gray;
+}
+
+svg {
+    width: 64px;
+    height: 64px;
+}
+
+.blue svg {
+    fill: #0078d7;
+}
+
+.green svg {
+    fill: #107c10;
+}
+
+.yellow svg {
+    fill: #ff8c00;
+}
+
+.red svg {
+    fill: #d13438;
+}
+
+svg path.msportalfx-svg-c01 {
+    fill: white;
+}
+
+main {
+    width: 1280px;
+    position: relative;
+    margin: 0 auto;
+    font-size: 0;
+}
+
+.notice {
+    color: #ccc;
+    margin-top: 0;
+    font-size: 12px;
+    text-align: center;
+}
+
+@media only screen and (max-width: 1279px) {
+    main {
+        width: 960px;
+    }
+}
+
+@media only screen and (max-width: 959px) {
+    main {
+        width: 640px;
+    }
+}
+
+@media only screen and (max-width: 639px) {
+    main {
+        width: 320px;
+    }
+}
+</style>
+<script type="text/javascript">
+  var appInsights=window.appInsights||function(config){
+    function i(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},u=document,e=window,o="script",s="AuthenticatedUserContext",h="start",c="stop",l="Track",a=l+"Event",v=l+"Page",y=u.createElement(o),r,f;y.src=config.url||"https://az416426.vo.msecnd.net/scripts/a/ai.0.js";u.getElementsByTagName(o)[0].parentNode.appendChild(y);try{t.cookie=u.cookie}catch(p){}for(t.queue=[],t.version="1.0",r=["Event","Exception","Metric","PageView","Trace","Dependency"];r.length;)i("track"+r.pop());return i("set"+s),i("clear"+s),i(h+a),i(c+a),i(h+v),i(c+v),i("flush"),config.disableExceptionTracking||(r="onerror",i("_"+r),f=e[r],e[r]=function(config,i,u,e,o){var s=f&&f(config,i,u,e,o);return s!==!0&&t["_"+r](config,i,u,e,o),s}),t
+    }({
+        instrumentationKey:"2c59ab68-9ebb-4c7c-9fe1-c2945c4272c4"
+    });
+       
+    window.appInsights=appInsights;
+    appInsights.trackPageView();
+</script>
+</head>
+<body>
+<h1>IoT DevTool<span class="beta">beta</span>
+<p class="notice">IoT DevTool is not a Microsoft official project</p></h1>
+<main>
+    <a class="blue item" href="device/">
+        <svg viewBox="0 0 16 16" focusable="false" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" role="presentation" aria-hidden="true" class="msportalfx-svg-placeholder"><g><g class="msportalfx-svg-c01"><path d="m 4,16 c -1.1,0 -2,-0.9 -2,-2 0,-1.1 0.9,-2 2,-2 1.1,0 2,0.9 2,2 0,1.1 -0.9,2 -2,2 z"></path><path d="m 11.689453,10.25 -2.9999999,3 L 5,13.25 l 0,1.5 4.3105469,0 3.0000001,-3 3.689453,0 0,-1.5 -4.310547,0 z"></path><path d="m 0,4.25 0,1.5 2.6894531,0 2,2 L 8,7.75 l 0,-1.5 -2.6894531,0 -2,-2 L 0,4.25 Z"></path><path d="M 9,9 C 7.9,9 7,8.1 7,7 7,5.9 7.9,5 9,5 c 1.1,0 2,0.9 2,2 0,1.1 -0.9,2 -2,2 z"></path><path d="M 5.6894531,1.25 2.46875,4.46875 3.53125,5.53125 6.3105469,2.75 12,2.75 l 0,-1.5 -6.3105469,0 z"></path><path d="m 13,4 c -1.1,0 -2,-0.9 -2,-2 0,-1.1 0.9,-2 2,-2 1.1,0 2,0.9 2,2 0,1.1 -0.9,2 -2,2 z"></path></g></g></svg>
+        <p>Device</p>
+        <p class="description">Send D2C messages, receive C2D messages, response direct method</p>
+    </a>
+    <a class="green item" href="registry/">
+        <svg viewBox="0 0 50 50" class="msportalfx-svg-placeholder" role="presentation" focusable="false" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g><path d="M25.561 23.167a.562.562 0 0 1-.288-.083L6.011 12.045a.578.578 0 0 1 0-1.002L25.149.075c.182-.1.405-.1.579 0L44.994 11.12c.174.102.29.291.29.496 0 .212-.116.4-.29.504L25.853 23.084a.573.573 0 0 1-.292.083" class="msportalfx-svg-c16"></path><path d="M22.792 50a.57.57 0 0 1-.295-.077L3.295 38.917A.567.567 0 0 1 3 38.416V16.331a.586.586 0 0 1 .881-.506L23.08 26.831a.587.587 0 0 1 .286.504v22.086a.575.575 0 0 1-.574.579m5.433 0a.575.575 0 0 1-.583-.579V27.478c0-.207.11-.397.288-.504l19.196-11.002a.601.601 0 0 1 .587 0 .583.583 0 0 1 .287.5v21.943a.58.58 0 0 1-.287.502L28.511 49.923a.534.534 0 0 1-.286.077" class="msportalfx-svg-c15"></path></g></svg>
+        <p>Registry</p>
+        <p class="description">Add devices, remove devices, generate device SAS token</p>
+    </a>
+    <a class="yellow item" href="service/">
+        <svg viewBox="0 0 50 50" class="msportalfx-svg-placeholder" role="presentation" focusable="false" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g><path d="M40.193 44.839a24.898 24.898 0 0 1-15.167 5.151c-7.52 0-14.956-3.376-19.87-9.803C-3.24 29.225-1.168 13.548 9.814 5.148 14.343 1.663 19.686 0 24.979 0c7.52 0 14.958 3.376 19.87 9.809 8.398 10.959 6.305 26.639-4.656 35.03" class="msportalfx-svg-c15"></path><path d="M35.6 29.378a5.385 5.385 0 0 0 7.541 1.004c.123-.094.218-.208.33-.309 2.409 1.697 4.082 2.817 5.025 3.459.279-.723.472-1.417.67-2.142a130.857 130.857 0 0 1-4.29-3.356c.639-1.68.437-3.64-.73-5.171a5.36 5.36 0 0 0-6.936-1.377 224.317 224.317 0 0 1-8.293-7.833c9.165-4.929 15.676-4.207 15.676-4.207-1.087-1.386-2.305-2.6-3.606-3.697-3.865-.597-9.869-.53-16.729 3.119l-.002-.003h-.001a200.322 200.322 0 0 1-6.983-7.712A23.264 23.264 0 0 0 13.96 2.5c1.749 2.862 4.102 5.749 6.754 8.565l.017.017a46.293 46.293 0 0 0-6.944 6.015c-.29.309-.569.62-.842.931a7.546 7.546 0 0 0-4.117.282C6.564 13.425 6.746 9.501 7.104 7.478c-.983 1.03-1.901 2.113-2.692 3.267-.591 2.415-.759 5.898.985 10.095a7.538 7.538 0 0 0-.005 9.153c.176.229.364.442.559.645a37.87 37.87 0 0 0-1.46 8.761c.237.322.237.582.472.896 1.199 1.538 2.705 2.834 4.16 4.008-.18-2.75.014-6.806 1.714-11.372a7.507 7.507 0 0 0 3.483-.566c.64.563 1.31 1.132 2.025 1.711a41.672 41.672 0 0 0 7.285 4.643 4.974 4.974 0 0 0 .968 3.518 4.998 4.998 0 0 0 6.983.919 4.918 4.918 0 0 0 1.108-1.216c3.889.866 7.287 1.019 9.806 1.019.386 0 2.177-2.436 3.203-3.946-1.534.321-6.083.946-12.3-.84a4.952 4.952 0 0 0-.898-1.98c-1.579-2.07-4.466-2.518-6.618-1.133a46.853 46.853 0 0 1-6.758-4.49 46.422 46.422 0 0 1-1.359-1.118 7.578 7.578 0 0 0 .318-7.55c.286-.286.567-.573.871-.857 2.311-2.159 4.485-3.887 6.519-5.274-.082-.076-.156-.156-.236-.233.081.075.157.152.239.227l-.002.001c3.121 2.886 6.43 5.621 9.564 8.065-.829 1.758-.699 3.899.562 5.547z" class="msportalfx-svg-c01"></path></g></svg>
+        <p>Service</p>
+        <p class="description">Send C2D messages, receive D2C messages, call direct method, update device twin</p>
+    </a>
+    <a class="red item" href="restful/">
+        <svg viewBox="0 0 50 50" class="msportalfx-svg-placeholder" role="presentation" focusable="false" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g><path d="M20.5 32.5h-8.9c-4.4 0-8-3.6-8-8.1s3.4-8.1 8-8.1c.8 0 1.7.2 2.7.3l1.7.5.5-1.7C18.1 10.2 23.1 7 28.8 7 35.7 7 41 12.3 41 19.2c0 1.1-.2 2.2-.5 3.3l-.7 2.5 2.7-.3h.5c2 0 3.6 1.7 3.6 3.6s-1.4 3.3-3.1 3.6h-8.9c-.3-2.5-1.6-4.7-3.3-6.4-2.2-2.2-5.2-3.5-8.3-3.5-2.2 0-4.4.6-6.1 1.7l1.9 3c1.4-.8 2.8-1.1 4.4-1.1 2.2 0 4.4.8 5.8 2.5 1.6 1.6 2.5 3.6 2.5 5.8s-.8 4.4-2.5 5.8c-1.6 1.7-3.6 2.5-5.8 2.5-1.6 0-3.1-.5-4.4-1.4l-1.9 3c1.9 1.1 4.1 1.9 6.1 1.9 3.1 0 6.1-1.1 8.3-3.4 1.9-1.9 3-4.4 3.3-7h9.3c3.6-.3 6.3-3.4 6.3-7.2 0-3-2.8-5.8-6.1-6.4.2-.6.2-.9.2-1.9C44.3 11 38.1 4 28.2 4 21.9 4 16.3 7.6 14 13.4c-.8 0-1.4-.3-2.3-.3C5.2 13 0 18 0 24.4c0 6.3 5.2 11.3 11.4 11.3h9.8l-.7-3.2z" class="msportalfx-svg-c15"></path><circle cx="22.8" cy="33.8" r="5.6" class="msportalfx-svg-c20"></circle></g></svg>
+        <p>RESTful</p>
+        <p class="description">Device API, Device Twin API, HTTP Runtime</p>
+    </a>
+</main>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-92746982-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

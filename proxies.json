@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json.schemastore.org/proxies",
+    "proxies": {
+        "shareRoute": {
+            "matchCondition": {
+                "route": "/share/{*rest}"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/share?path={rest}"
+        },
+        "restfulRoute": {
+            "matchCondition": {
+                "route": "/restful/{*rest}"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/restful?path={rest}"
+        },
+        "restRoute": {
+            "matchCondition": {
+                "route": "/rest/{*rest}"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/rest?path={rest}"
+        },
+        "deviceRoute": {
+            "matchCondition": {
+                "route": "/device/{*rest}"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/device?path={rest}"
+        },
+        "serviceRoute": {
+            "matchCondition": {
+                "route": "/service/{*rest}"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/service?path={rest}"
+        },
+        "registryRoute": {
+            "matchCondition": {
+                "route": "/registry/{*rest}"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/registry?path={rest}"
+        },
+        "homeRoute": {
+            "matchCondition": {
+                "route": "/"
+            },
+            "backendUri": "https://%WEBSITE_HOSTNAME%/api/home?path=index.html"
+        }
+    }
+}
